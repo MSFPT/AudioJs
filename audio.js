@@ -33,7 +33,7 @@ document.body.appendChild(box_audio_style);
 for (let i = 0; i < audios.length; i++) {
     const audio = audios[i];
     let action = random(0, (7 ** 7)) + '' + random(0, (7**7));
-    audio.removeAttribute('controls');
+    // audio.removeAttribute('controls');
   
     audio.setAttribute('action', action);
     audio.volume = 1;
@@ -53,14 +53,14 @@ for (let i = 0; i < audios.length; i++) {
         + '<div class="vlms" style="display:none;">'
           + '<i class="fa fa-caret-up volume-up"></i>'
           + '<i class="fa fa-caret-down volume-down"></i>'
-        + '</div'
+        + '</div>'
       + '</nav>'
     audio.before(box_audio);  
 
     audio.currentTime = 0.001
   
     audio.addEventListener('play', (event) => {
-        var audio   = event.path[0]
+        var audio   = event.srcElement
         var action  = audio.getAttribute('action')
         var mus_box = '#audio[action="' + action + '"]'
         document.querySelector(mus_box + ' > nav .play').classList.toggle('fa-pause')
@@ -69,7 +69,7 @@ for (let i = 0; i < audios.length; i++) {
     })
   
     audio.addEventListener('pause', (event) => {
-        var audio   = event.path[0]
+        var audio   = event.srcElement
         var action  = audio.getAttribute('action')
         var mus_box = '#audio[action="' + action + '"]'
         document.querySelector(mus_box + ' > nav .play').classList.toggle('fa-play')
@@ -78,7 +78,7 @@ for (let i = 0; i < audios.length; i++) {
     })
   
     audio.addEventListener('timeupdate', (event) => {
-        var audio   = event.path[0]
+        var audio   = event.srcElement
         var action  = audio.getAttribute('action')
         var mus_box = '#audio[action="' + action + '"]'
         var time    = audio.currentTime;
@@ -90,9 +90,8 @@ for (let i = 0; i < audios.length; i++) {
     })
 
     box_audio.querySelector('nav i.play').addEventListener('click', function (event) {
-        var path = event.path
-        var btn = path[0]
-        var audio = path[2].nextElementSibling
+        var btn = event.srcElement
+        var audio = event.srcElement.parentNode.parentNode.nextElementSibling
         if (btn.classList.contains('fa-play')) {
             audio.play()
         } else {
@@ -101,8 +100,7 @@ for (let i = 0; i < audios.length; i++) {
     });
       
     box_audio.querySelector('nav .volume').addEventListener('click', function (event) {
-        var path = event.path
-        var volume_box = path[0].nextElementSibling
+        var volume_box = event.srcElement.nextElementSibling
     
         if (volume_box.style.display == 'none' ? true : false) {
             volume_box.style.display = 'flex'
@@ -112,9 +110,8 @@ for (let i = 0; i < audios.length; i++) {
     });
       
     box_audio.querySelector('nav .volume-up').addEventListener('click', function (event) {
-        var path = event.path
-        var btn = path[1].previousElementSibling
-        var audio = path[3].nextElementSibling
+        var btn = event.srcElement.parentNode.previousElementSibling
+        var audio = event.srcElement.parentNode.parentNode.parentNode.nextElementSibling
         var volume = parseInt(audio.volume * 100);
         
         audio.volume += (0.02);
@@ -123,9 +120,8 @@ for (let i = 0; i < audios.length; i++) {
     });
 
     box_audio.querySelector('nav .volume-down').addEventListener('click', function (event) {
-        var path = event.path
-        var btn = path[1].previousElementSibling
-        var audio = path[3].nextElementSibling
+        var btn = event.srcElement.parentNode.previousElementSibling
+        var audio = event.srcElement.parentNode.parentNode.parentNode.nextElementSibling
         var volume = parseInt(audio.volume * 100);
 
         audio.volume -= (0.02);
@@ -165,9 +161,8 @@ for (let i = 0; i < audios.length; i++) {
     }
       
     box_audio.querySelector('.timeing').addEventListener('pointerup', function (event) {
-        var path = event.path
-        var timeing = path[0]
-        var audio = path[2].nextElementSibling
+        var timeing = event.srcElement;
+        var audio = event.srcElement.parentNode.parentNode.nextElementSibling;
         audio.currentTime = parseInt(timeing.value);
     });
 
